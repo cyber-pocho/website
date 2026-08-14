@@ -1,0 +1,284 @@
+/* ---------------------------------------------------------------- palette */
+/* Strictly monochrome: no hue anywhere, only steps of grey. Light is the
+   base; the dark block below overrides it. Both are stamped explicitly on
+   <html> by the inline script in index.html, so there is no flash. */
+
+:root {
+  --desk: #e9e9e9;
+  --bg: #fbfbfb;
+  --chrome: #ededed;
+  --fg: #16161a;
+  --dim: #6a6a70;
+  --faint: #9a9aa0;
+  --line: #d2d2d6;
+  --accent: #000000;
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.06), 0 12px 32px rgb(0 0 0 / 0.12);
+}
+
+:root[data-theme="dark"] {
+  --desk: #050506;
+  --bg: #0c0c0e;
+  --chrome: #151517;
+  --fg: #e9e9ec;
+  --dim: #85858e;
+  --faint: #55555d;
+  --line: #26262b;
+  --accent: #ffffff;
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.5), 0 16px 44px rgb(0 0 0 / 0.6);
+}
+
+/* No-JS fallback: without the inline stamp, follow the OS. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --desk: #050506;
+    --bg: #0c0c0e;
+    --chrome: #151517;
+    --fg: #e9e9ec;
+    --dim: #85858e;
+    --faint: #55555d;
+    --line: #26262b;
+    --accent: #ffffff;
+    --shadow: 0 1px 2px rgb(0 0 0 / 0.5), 0 16px 44px rgb(0 0 0 / 0.6);
+  }
+}
+
+/* ------------------------------------------------------------------ page */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  padding: clamp(0.75rem, 4vw, 3rem);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--desk);
+  color: var(--fg);
+  font-family: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas,
+    "DejaVu Sans Mono", monospace;
+  font-size: clamp(11px, 2.4vw, 13.5px);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------------------------------------------------------------- window */
+
+.window {
+  /* The screen holds a classic 80 columns; the extra 2rem is its padding, so
+     80ch of content actually fits rather than clipping at the edge. */
+  width: min(100%, calc(80ch + 2rem));
+  height: min(100%, 42rem);
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.titlebar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--chrome);
+  border-bottom: 1px solid var(--line);
+  user-select: none;
+}
+
+/* Three window buttons, drawn as outlines so they stay monochrome. */
+.dots {
+  flex: none;
+  display: flex;
+  gap: 0.4rem;
+}
+
+.dots::before,
+.dots::after,
+.dots > span {
+  content: "";
+  width: 0.65em;
+  height: 0.65em;
+  border: 1px solid var(--faint);
+  border-radius: 50%;
+}
+
+.title {
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+  color: var(--dim);
+  font-size: 0.85em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.toggle {
+  flex: none;
+  width: 1.9em;
+  height: 1.9em;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  font: inherit;
+  font-size: 1em;
+  line-height: 1;
+  color: var(--dim);
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.toggle:hover {
+  color: var(--fg);
+  border-color: var(--faint);
+}
+
+.toggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+/* ---------------------------------------------------------------- screen */
+
+.screen {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: auto;
+  padding: 0.75rem 1rem 1.5rem;
+  cursor: text;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) transparent;
+}
+
+.screen::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.screen::-webkit-scrollbar-thumb {
+  background: var(--line);
+  border-radius: 5px;
+}
+
+/* Rows are pre-wrapped so ASCII art and padded columns keep their spacing.
+   `min-width: max-content` stops the art collapsing when the screen scrolls
+   horizontally on a narrow viewport. */
+.row {
+  white-space: pre;
+  min-width: max-content;
+}
+
+.promptline {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* The real input only exists to receive keystrokes and open the mobile
+   keyboard; the visible prompt and block cursor are drawn in .promptline. */
+.capture {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  border: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* -------------------------------------------------------------- typography */
+
+.user {
+  color: var(--fg);
+  font-weight: 700;
+}
+
+.path {
+  color: var(--dim);
+  font-weight: 700;
+}
+
+.dir {
+  color: var(--fg);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.dim {
+  color: var(--dim);
+}
+
+.bold {
+  color: var(--fg);
+  font-weight: 700;
+}
+
+/* Errors get no colour to spend, so they lean on weight and a marker. */
+.err {
+  color: var(--fg);
+  font-weight: 700;
+}
+
+.err::before {
+  content: "✗ ";
+  color: var(--dim);
+}
+
+a {
+  color: var(--fg);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-thickness: 1px;
+}
+
+a:hover {
+  background: var(--fg);
+  color: var(--bg);
+  text-decoration: none;
+}
+
+.cursor {
+  background: var(--accent);
+  color: var(--bg);
+  animation: blink 1.1s steps(1) infinite;
+}
+
+@keyframes blink {
+  50% {
+    background: transparent;
+    color: var(--fg);
+  }
+}
+
+/* A visitor who can't see the cursor blink doesn't need it moving. */
+@media (prefers-reduced-motion: reduce) {
+  .cursor {
+    animation: none;
+  }
+}
+
+.noscript {
+  position: fixed;
+  inset: auto 0 0;
+  margin: 0;
+  padding: 1rem;
+  text-align: center;
+  background: var(--chrome);
+  border-top: 1px solid var(--line);
+}

@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>julian@arch</title>
+    <meta
+      name="description"
+      content="Julian — physicist, builds AI things. A terminal you can cd around."
+    />
+    <link rel="icon" type="image/svg+xml" href="/misc/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap"
+    />
+    <script>
+      // Stamp the theme before first paint so there's no flash of the wrong
+      // one. Mirrors the logic in src/theme.ts.
+      (() => {
+        let stored = null;
+        try {
+          stored = localStorage.getItem("tty-theme");
+        } catch {}
+        const system = matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light";
+        document.documentElement.dataset.theme = stored || system;
+      })();
+    </script>
+  </head>
+  <body>
+    <main class="window">
+      <div class="titlebar">
+        <span class="dots" aria-hidden="true"><span></span></span>
+        <span class="title" id="title">julian@arch: ~</span>
+        <button
+          class="toggle"
+          id="theme-toggle"
+          type="button"
+          aria-label="Switch theme"
+        >
+          ◐
+        </button>
+      </div>
+
+      <div class="screen" id="screen">
+        <div class="output" id="output"></div>
+        <div class="promptline" id="prompt"></div>
+        <input
+          class="capture"
+          id="tty"
+          type="text"
+          autocomplete="off"
+          autocapitalize="off"
+          autocorrect="off"
+          spellcheck="false"
+          aria-label="Terminal input"
+        />
+      </div>
+    </main>
+
+    <noscript>
+      <p class="noscript">
+        This terminal needs JavaScript. The short version: Julian, physicist,
+        builds AI things —
+        <a href="https://github.com/cyber-pocho">github</a>,
+        <a href="https://linkedin.com/in/jualfonsog">linkedin</a>,
+        <a href="https://x.com/julian_in_orbit">x</a>.
+      </p>
+    </noscript>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
